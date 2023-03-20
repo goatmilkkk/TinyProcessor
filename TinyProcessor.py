@@ -34,6 +34,8 @@ def process_syscalls(tag_file):
                     winapi = syscall_to_winapi[syscall]
                     lines[i] = lines[i].replace(syscall_pos, winapi)
                     i += 1
+                    if not lines[i].startswith(f"\t"):
+                        i += 1 # skip fuction's name
 
                     # add argument names of function
                     remove = False  # used to handle Nt fxs that are undeclared
