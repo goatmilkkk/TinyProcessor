@@ -28,11 +28,14 @@ def process_syscalls(tag_file):
 
             # replace syscall number w/ function name
             if "SYSCALL" in lines[i]:
-                syscall = int(lines[i].split(":")[1], 16)
+                syscall_pos = lines[i].split(":")[1].split("\n")[0]
+                syscall = int(syscall_pos.split("(")[0], 16)
                 if syscall in syscall_to_winapi:
                     winapi = syscall_to_winapi[syscall]
-                    lines[i] = lines[i].replace(hex(syscall), winapi)
+                    lines[i] = lines[i].replace(syscall_pos, winapi)
                     i += 1
+                    if not lines[i].startswith(f"\t"):
+                        i += 1 # skip fuction's name
 
                     # add argument names of function
                     remove = False  # used to handle Nt fxs that are undeclared
